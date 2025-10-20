@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial</title>
+    <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1b6f7eff, #863434ff, #b6912cff);
+      background-size: 400% 400%;
+      animation: gradient 10s ease infinite;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h2 {
+      color: #fff;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 40px 35px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      transition: 0.4s ease;
+    }
+
+    form:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1em;
+      background: rgba(255, 255, 255, 0.8);
+      transition: 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      background: #fff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    }
+
+    input[type="submit"] {
+      background: #0d47a1;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      transition: 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background: #1565c0;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="POST" action="login.php">
+        Usuário: <input type="text" name="usuario"><br>
+        Senha: <input type="password" name="senha"><br>
+    <input type="submit" value="Entrar">
+    </form>
+</body>
+</html>
+
+
+
+
+<?php
+    session_start();
+
+    $usuario = $_POST['usuario'] ?? '';
+    $senha = $_POST['senha'] ?? '';
+
+    if ($usuario === 'admin' && $senha === '123') {
+        $_SESSION['usuario'] = $usuario;
+        $mensagem = "Login bem-sucedido!";
+        $tipo = "sucesso";
+        $link = "produtos.php";
+        $textoLink = "Ir para produtos";
+    } else {
+        $mensagem = "Usuário ou senha incorretos.";
+        $tipo = "erro";
+        $link = "index.php";
+        $textoLink = "Tentar novamente";
+    }
+
+    $_SESSION['tema'] = $_POST['tema'] ?? 'padrão';
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultado do Login</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 400% 400%;
+      animation: gradient 10s ease infinite;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      transition: 0.3s;
+    }
+
+    .box:hover {
+      transform: translateY(-5px);
+    }
+
+    .sucesso {
+      color: #00ff15ff;
+    }
+
+    .erro {
+      color: #fa0000ff;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 25px;
+      background-color: #0d47a1;
+      color: white;
+      text-decoration: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    a:hover {
+      background-color: #1590c0ff;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2 class="<?php echo $tipo; ?>">
+      <?php echo $mensagem; ?>
+    </h2>
+    <a href="<?php echo $link; ?>"><?php echo $textoLink; ?></a>
+  </div>
+</body>
+</html>
+
+
+
+<?php
+    session_start();
+
+    $tema = $_SESSION['tema'] ?? 'claro';
+
+    if (!isset($_SESSION['usuario'])) {
+        echo "<body style='font-family: Arial; background:#111; color:#fff; text-align:center; margin-top:100px'>
+                <h2>Acesso negado </h2>
+                <a href='index.php' style='color:#4ea3ff; text-decoration:none;'>Faça login</a>
+            </body>";
+        exit;
+    }
+
+    $produtos = [
+        ['nome' => 'Camisa Polo', 'categoria' => 'Roupas', 'preco' => 89.90],
+        ['nome' => 'Calça Jeans', 'categoria' => 'Roupas', 'preco' => 159.90],
+        ['nome' => 'Tênis Esportivo', 'categoria' => 'Calçados', 'preco' => 299.90],
+        ['nome' => 'Boné Adidas', 'categoria' => 'Acessórios', 'preco' => 79.90],
+        ['nome' => 'Meia de Algodão', 'categoria' => 'Roupas', 'preco' => 19.90],
+        ['nome' => 'Jaqueta de Couro', 'categoria' => 'Roupas', 'preco' => 499.90],
+        ['nome' => 'Relógio Digital', 'categoria' => 'Acessórios', 'preco' => 349.90],
+        ['nome' => 'Chinelo Havaianas', 'categoria' => 'Calçados', 'preco' => 39.90],
+        ['nome' => 'Mochila Escolar', 'categoria' => 'Acessórios', 'preco' => 119.90],
+    ];
+
+    $filtro = $_GET['busca'] ?? '';
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Produtos</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: <?php echo ($tema === 'escuro')
+                ? "linear-gradient(135deg, #0f2027, #203a43, #2c5364)"
+                : "linear-gradient(135deg, #e0eafc, #cfdef3)"; ?>;
+            background-size: 400% 400%;
+            animation: gradient 12s ease infinite;
+            min-height: 100vh;
+            color: <?php echo ($tema === 'escuro') ? '#eee' : '#222'; ?>;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        @keyframes gradient {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        form {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            width: 250px;
+            background: rgba(255,255,255,0.9);
+        }
+
+        input[type="submit"] {
+            background-color: #0d7ea1ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #1565c0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            max-width: 700px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba(13, 71, 161, 0.9);
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transition: 0.3s;
+        }
+
+        .sair {
+            margin-top: 30px;
+            background-color: crimson;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .sair:hover {
+            background-color: #e60000;
+        }
+    </style>
+</head>
+<body>
+    <h2>Olá, <?php echo $_SESSION['usuario']; ?> 👋</h2>
+
+    <form method="GET">
+        <input type="text" name="busca" placeholder="Buscar produto..." value="<?php echo htmlspecialchars($filtro); ?>">
+        <input type="submit" value="Pesquisar">
+    </form>
+
+    <table>
+        <tr>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Preço (R$)</th>
+        </tr>
+        <?php
+        foreach ($produtos as $p) {
+            if ($filtro === '' || str_contains(strtolower($p['nome']), strtolower($filtro))) {
+                echo "<tr>
+                        <td>{$p['nome']}</td>
+                        <td>{$p['categoria']}</td>
+                        <td>" . number_format($p['preco'], 2, ',', '.') . "</td>
+                      </tr>";
+            }
+        }
+        ?>
+    </table>
+
+    <a href="index.php" class="sair">Sair</a>
+</body>
+</html>
